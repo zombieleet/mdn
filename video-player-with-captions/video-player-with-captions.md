@@ -1,34 +1,34 @@
-#Video Player with Captions
+# Video Player with Captions
 
 Previously we looked at how to [build a cross browser video player](https://developer.mozilla.org/en-US/Apps/Build/Manipulating_media/cross_browser_video_player) using the Media and Fullscreen APIs, and also at how to [style the player](https://developer.mozilla.org/en-US/Apps/Build/Manipulating_media/Video_player_styling_basics). This article will take the same player and look at how captions and/or subtitles could be added.
 
-##The example in action
+## The example in action
 
 ENTER SCREENSHOT HERE
 
 You can find the code for the [video player with captions](https://github.com/iandevlin/iandevlin.github.io/tree/master/mdn/video-player-with-captions) on GitHub, and you can also [view it live](http://iandevlin.github.io/mdn/video-player-with-captions/).
 
-##HTML5 and Video Captions
+## HTML5 and Video Captions
 
 Before diving into how to add captions to the video player, there are a number of things that need to be cleared up and mentioned before use.
 
 First of all, [captions and subtitles are not the same thing](http://screenfont.ca/learn/), but for this article we will refer to them as captions, as the content of the files that are used have more in common with that type of content.
 
-###The `<track>` element
+### The `<track>` element
 HTML5 allows us to specify captions for a video by way of the [`<track>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track). The various attributes in this element allow us to specify such things as the type of content that we're adding, the language it's in and of course a reference to the text file that contains the actual caption information.
 
-###WebVTT
+### WebVTT
 The text files that contain the actual caption data are simple text files that follow a specified format, in this case the Web Video Text Tracks or [WebVTT format.](https://developer.mozilla.org/en-US/docs/HTML/WebVTT) The [WebVTT specification](http://dev.w3.org/html5/webvtt/) is still being worked on, but major parts of it are stable so we can use it today.
 
 Video providers (such as the [Blender Foundation](http://www.blender.org/foundation/)) provide caption or subtitles in a text format with their videos, but they're usually in the SRT (SubRip Text) format. These can be easily converted to WebVTT using an online converter such as [srt2vtt](https://atelier.u-sub.net/srt2vtt/).
 
-##Modifications
+## Modifications
 
 This section summarises the modifications made to the previous article's code in order to facilitate the addition of subtitles to the video.
 
 In this example we are using a different video, [Sintel](http://www.sintel.org/), to the one used in the previous articles as it actually has some speech in it and therefore is better for illustrating how captions work!
 
-###HTML Markup
+### HTML Markup
 
 As mentioned above, we need to make use of the new HTML5 `<track>` element to add our caption files to the HTML5 video. We actually have our captions in three different languages, English, German, and Spanish, so we will add all three of these to our HTML5 `<video>` element:
 
@@ -38,7 +38,7 @@ As mentioned above, we need to make use of the new HTML5 `<track>` element to ad
    <source src="video/sintel-short.webm" type="video/webm">
    <track label="English" kind="captions" srclang="en" src="captions/vtt/sintel-en.vtt" default>
    <track label="Deutsch" kind="captions" srclang="de" src="captions/vtt/sintel-de.vtt">
-   <track label="Español" kind="captions" srclang="es" src="captions/vtt/sintel-es.vtt">
+   <track label="EspaÃ±ol" kind="captions" srclang="es" src="captions/vtt/sintel-es.vtt">
 </video>
 ```
 
@@ -68,7 +68,7 @@ In addition to adding the `<track>` elements, we also add a new button to contro
 </div>
 ```
 
-###CSS Changes
+### CSS Changes
 
 The video controls undergo some minor changes in order to facilitate the extra button, but these are relatively straightforward.
 
@@ -90,7 +90,7 @@ No image is used for the captions button, so it is simply styled as:
 
 There will also be other CSS changes that are specific to some extra JavaScript implementation, but these will be mentioned at the appropriate place below.
 
-##JavaScript Implementation
+## JavaScript Implementation
 
 A lot of what we will do to access the video captions revolves around JavaScript. Similar to the video controls, if a browser supports HTML5 video captions, there will be a native button within the control set but since we have defined our own video control set, this button is hidden.
 
@@ -108,7 +108,7 @@ for (var i = 0; i < video.textTracks.length; i++) {
 ```
 As you can see, we loop through each `textTracks` within the video and set its `mode` to `'hidden'`. We can does this via a handy API, which, similar to the Media API, the [WebVTT API](http://dev.w3.org/html5/webvtt/#api) gives us access to all the text tracks that are defined for a HTML5 video using the `<track>` element.
 
-###Building a caption menu
+### Building a caption menu
 
 Our aim, is to use the captions button we added earlier to display a menu to the user that allows them to choose which language they want the captions displayed in, or to turn them off entirely.
 
@@ -178,7 +178,7 @@ captions.addEventListener('click', function(e) {
 });
 ```
 
-###CSS
+### CSS
 
 We also add some rudimentary styling for the newly created captions menu is also required:
 ```css
@@ -211,7 +211,7 @@ captions-menu {
 }
 ```
 
-##Cue Styling
+## Cue Styling
 
 One of the less known about, and less supported, features of WebVTT, is the ability to style the individual captions via [CSS Extensions](http://dev.w3.org/html5/webvtt/#css-extensions). 
 
@@ -247,42 +247,42 @@ Then this specific 'voice' will be stylable as such:
 ```
 Some of the styling of cues with `::cue` currently works on Chrome, Opera, and Safari.
 
-##Browser Compatibility
+## Browser Compatibility
 
 Browser support for [WebVTT and the `<track>` element](http://caniuse.com/webvtt) is fairly good, although some browsers differ slightly in their implementation.
 
-###Internet Explorer
+### Internet Explorer
 Since Internet Explorer 10+ captions are enabled by default, and the default controls contains a button and a menu that offers the same functionality as the menu we just built. The `default` attribute is also honoured.
 
 NOTE: IE will completely ignore WebVTT files unless you setup the MIME type. This can easily be done by adding a `.htaccess` file to the appropriate directory that contains: `AddType text/vtt .vtt`.
 
-###Safari
+### Safari
 
 Safari 6.1+ has similar support to Internet Explorer 11, displaying a menu with the different available options, with the addition of an "Auto" option which allows the browser to choose.
 
-###Chrome and Opera
+### Chrome and Opera
 These browsers have similar implementations of video captions in that they are enabled by default and the default control set contains a 'cc' button which simply turns captions on and off. It ignores the `default` attribute on the `<track>` element and will try to match the browser's language to the caption's language.
 
-###Firefox
+### Firefox
 Firefox's implementation is completely broken due to a [bug](https://bugzilla.mozilla.org/show_bug.cgi?id=981280), and this has led Mozilla to take the decision to turn off WebVTT support by default but you can turn it on via the `media.webvtt.enabled` flag.
 
 Once you have enabled WebVTT, if you only provide one set of captions, Firefox works ok, but there is no way to turn them off. If you provide more than one set of captions, it just displays them on top of one another, and none of the JavaScript magic mentioned above has any effect, it simply ignores any manual setting of the `textTracks` `mode` attribute.
 
-##Plugins
+## Plugins
 
 If, after reading through this article you decide that you can't be bothered to do all of this and want someone else to do it for you, there are plenty of plugins out there that offer caption and subtitle support that you can use.
 
-###[playr](http://www.delphiki.com/html5/playr/)
+### [playr](http://www.delphiki.com/html5/playr/)
 This small plugin implements subtitles, captions, and chapters as well as both WebVTT and SRT file formats.
-###[jwplayer](http://www.jwplayer.com/)
+### [jwplayer](http://www.jwplayer.com/)
 This video player is very extensive and does a lot more than simply support video captions. It supports WebVTT, SRT, and DFXP file formats.
-###[MediaElement.js](http://mediaelementjs.com/)
+### [MediaElement.js](http://mediaelementjs.com/)
 Another complete video player that also support video captions, albeit only in SRT format.
-###[LeanBack Player](http://www.leanbackplayer.com/)
+### [LeanBack Player](http://www.leanbackplayer.com/)
 Yet another video player that supports WebVTT captions as well as providing other standard player functionality.
-###[SublimeVideo](http://sublimevideo.net)
+### [SublimeVideo](http://sublimevideo.net)
 This player also supports captions through WebVTT and SRT files.
-###[Video.js](http://www.videojs.com/)
+### [Video.js](http://www.videojs.com/)
 Supports WebVTT video subtitles.
 
 You can find an excellent list of HTML5 Video Players and their current "state" at [HTML5 Video Player Comparison](http://praegnanz.de/html5video/).
